@@ -63,15 +63,15 @@ def converteBase10(num):
     :return: finalNum: int
     """
     algarismos = {'0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
-                  '10': 'A', '11': 'B', '12': 'C', '13': 'D', '14': 'E', '15': 'F'}
+                  'A': '10', 'B': '11', 'C': '12', 'D': '13', 'E': '14', 'F': '15'}
     # TEMOS PROBLEMAS NO ZER0
     # ERRO DE CHAVE
     strnum = str(num)
     nalgs = len(strnum)
     finalNum = 0
     for i in range(1, nalgs+1):
-        finalNum += int(algarismos[strnum[(-1)*i]]) * pow(16, i-1)
-        if algarismos[strnum[(-1)*i]] == 0:
+        finalNum += int(algarismos[strnum[-i]]) * pow(16, i-1)
+        if algarismos[strnum[-i]] == 0:
             finalNum += pow(16, i)
 
     return int(finalNum)
@@ -84,21 +84,46 @@ def main():
     """
     entrada = input()
     while entrada != '-1':
-
-        if entrada[1:2] == "x" and entrada[2:] != "":
-            number = converteBase10(entrada[2:])
-            print(number)
-        else:
-            if entrada[1:2] != "x":
-                exps, maior = listaexpoentes(int(entrada), 16)
-                coefs = coeficientes(exps)
-                number = "0x" + str(converteBase16(coefs))
-                if int(entrada) % 16 == 0:
-                    number += maior*'0'
-
+        if entrada != '0':
+            if entrada[1:2] == "x" and entrada[2:] != "":
+                number = converteBase10(entrada[2:])
                 print(number)
+            else:
+                if entrada[1:2] != "x":
+                    exps, maior = listaexpoentes(int(entrada), 16)
+                    coefs = coeficientes(exps)
+                    number = "0x" + str(converteBase16(coefs))
+                    if int(entrada) % 16 == 0:
+                        number += maior*'0'
+
+                    print(number)
+        else:
+            print(0)
 
         entrada = input()
 
 main()
 
+# TESTES EXECUTADOS NA FUNÇÃO
+
+# GERAR NÚMEROS NA BASE HEXADECIMAL PARA TESTES
+def gerar_nums_base16(qtd):
+    gerados = []
+    for i in range(100, qtd+100):
+        exps, maior = listaexpoentes(i, 16)
+        coefs = coeficientes(exps)
+        number = "0x" + str(converteBase16(coefs))
+        gerados.append(number)
+    return gerados
+
+# TESTAR A CONVERSÃO DOS NÚMEROS GERADOS PARA ENCONTRAR ERRO
+def teste_auto():
+    nums_teste = gerar_nums_base16(100)
+    print(nums_teste)
+    casos = len(nums_teste)
+    for i in range(casos):
+        strnum = nums_teste[i]
+        num = converteBase10(strnum[2:])
+        print(num)
+
+#teste_auto()
